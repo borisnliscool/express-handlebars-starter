@@ -17,7 +17,7 @@ app.set("view engine", ".hbs");
 app.set("views", path.join(config.__dirname, "src/views"));
 
 // Public Folder
-app.use(express.static(path.join(config.__dirname, "build")));
+app.use(express.static(path.join(config.__dirname, "dist")));
 
 // Use all routes in src/routes
 fs.readdirSync(path.join(config.__dirname, "src/routes"))
