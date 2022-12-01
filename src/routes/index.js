@@ -3,7 +3,9 @@ import render from "../utils/render.js";
 const router = express.Router();
 
 router.get("/", (req, res) => {
-	render(res, "index");
+	render(res, "index", {
+        title: "Home"
+    });
 });
 
 export default { router };

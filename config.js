@@ -6,7 +6,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default {
-	url: "localhost",
+    dev: true,
+	url: "http://localhost",
 	port: 3000,
+	siteName: "example.com",
+
+	// Dont change
 	__dirname,
 };
