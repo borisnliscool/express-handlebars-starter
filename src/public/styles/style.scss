@@ -13,7 +13,7 @@ body {
 	min-width: 100%;
 	min-height: 100vh;
 
-    background-color: rgb(33, 35, 39);
+	background-color: rgb(33, 35, 39);
 }
 
 @mixin center {
@@ -31,12 +31,12 @@ body {
 }
 
 @keyframes bounce {
-    from {
-        transform: translateY(-10px) translateX(10px);
-    }
-    to {
-        transform: translateY(10px) translateX(-10px);
-    }
+	from {
+		transform: translateY(-10px) translateX(10px);
+	}
+	to {
+		transform: translateY(10px) translateX(-10px);
+	}
 }
 
 .container {
@@ -47,12 +47,12 @@ body {
 
 	.banner {
 		@include center;
-        margin-bottom: 5em;
+		margin-bottom: 5em;
 
 		span {
 			font-size: 75px;
 			margin-bottom: 2rem;
-            animation: bounce 750ms ease alternate-reverse infinite;
+			animation: bounce 750ms ease alternate-reverse infinite;
 		}
 
 		h1 {
@@ -63,19 +63,26 @@ body {
 			color: #0000;
 			-webkit-background-clip: text;
 
-            background-image: linear-gradient(45deg, #a100ff, #119cfd, #a100ff, #119cfd);
-            background-size: 300%;
-            animation: background-scroll 2500ms infinite linear;
+			background-image: linear-gradient(
+				45deg,
+				#a100ff,
+				#119cfd,
+				#a100ff,
+				#119cfd
+			);
+			background-size: 300%;
+			animation: background-scroll 2500ms infinite linear;
 
-            filter: drop-shadow(2px 2px 2px black)
+			filter: drop-shadow(2px 2px 2px black);
 		}
 
 		h2 {
-			margin-top: 0.5rem;
+			margin-top: 1rem;
 			font-style: italic;
-			font-size: 17px;
+			font-size: 15px;
 			font-weight: 500;
-            color: white;
+			color: white;
+            font-family: monospace;
 		}
 	}
 }
