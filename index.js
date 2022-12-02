@@ -6,6 +6,9 @@ import config, { __dirname } from "./config.js";
 
 const app = express();
 
+// Use json to be able to parse POST requests bodies
+app.use(express.json());
+
 // Handlebars configuration
 app.engine(
 	".hbs",
