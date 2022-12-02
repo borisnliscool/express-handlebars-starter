@@ -2,7 +2,7 @@ import express from "express";
 import { engine } from "express-handlebars";
 import path from "path";
 import fs from "fs";
-import config from "./config.js";
+import config, { __dirname } from "./config.js";
 
 const app = express();
 
@@ -14,17 +14,17 @@ app.engine(
 	})
 );
 app.set("view engine", ".hbs");
-app.set("views", path.join(config.__dirname, "src/views"));
+app.set("views", path.join(__dirname, "src/views"));
 
 // Public Folder
-app.use(express.static(path.join(config.__dirname, "dist")));
+app.use(express.static(path.join(__dirname, "dist")));
 
 // Use all routes in src/routes
-fs.readdirSync(path.join(config.__dirname, "src/routes"))
+fs.readdirSync(path.join(__dirname, "src/routes"))
 	.filter((f) => f.endsWith(".js"))
 	.forEach(async (file) => {
 		const route = await import(
-			"file://" + path.join(config.__dirname, "src/routes", file)
+			"file://" + path.join(__dirname, "src/routes", file)
 		);
 		app.use(route.default.router);
 	});

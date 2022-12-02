@@ -4,8 +4,8 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
 	render(res, "index", {
-        title: "Home"
-    });
+		title: "Home",
+	});
 });
 
 export default { router };
