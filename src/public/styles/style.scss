@@ -35,12 +35,14 @@ body {
 	}
 }
 
-@keyframes bounce {
+@keyframes rocket-bounce {
 	from {
 		transform: translateY(-10px) translateX(10px);
+		filter: drop-shadow(-15px 15px 4px rgba(0, 0, 0, 0.25));
 	}
 	to {
 		transform: translateY(10px) translateX(-10px);
+		filter: drop-shadow(-5px 5px rgba(0, 0, 0, 0.25));
 	}
 }
 
@@ -93,10 +95,10 @@ body {
 		@include center;
 		margin-bottom: 5em;
 
-		span {
+		.rocket {
 			font-size: 75px;
 			margin-bottom: 2rem;
-			animation: bounce 750ms ease alternate-reverse infinite;
+			animation: rocket-bounce 750ms ease alternate-reverse infinite;
 		}
 
 		h1 {
