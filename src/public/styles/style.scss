@@ -99,6 +99,7 @@ body {
 			font-size: 75px;
 			margin-bottom: 2rem;
 			animation: rocket-bounce 750ms ease alternate-reverse infinite;
+            user-select: none;
 		}
 
 		h1 {
