@@ -7,7 +7,6 @@ const __dirname = path.dirname(__filename);
 
 export default {
     dev: true,
-	url: "http://localhost",
 	port: 3000,
 	siteName: "example.com",
 
