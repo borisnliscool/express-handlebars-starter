@@ -5,15 +5,13 @@ import { __dirname } from "../../../config.js";
 
 const providers = {};
 
-(async () => {
-	fs.readdirSync(path.join(__dirname, "src/utils/auth/providers"))
-		.filter((f) => f.endsWith(".js"))
-		.forEach(async (file) => {
-			providers[file.replace(".js", "")] = await import(
-				"file://" + path.join(__dirname, "src/utils/auth/providers", file)
-			);
-		});
-})();
+fs.readdirSync(path.join(__dirname, "src/utils/auth/providers"))
+    .filter((f) => f.endsWith(".js"))
+    .forEach(async (file) => {
+        providers[file.replace(".js", "")] = await import(
+            "file://" + path.join(__dirname, "src/utils/auth/providers", file)
+        );
+    });
 
 export default function Auth(req, res, next) {
 	const { access_data } = req.cookies;
@@ -31,8 +29,9 @@ export default function Auth(req, res, next) {
 }
 
 export async function Login(provider, req, res) {
-	const success = await providers[provider].Authenticate(req, res);
+	const databaseUser = await providers[provider]?.Authenticate(req, res);
+	console.log("🚀 ~ file: auth.js:34 ~ Login ~ databaseUser", databaseUser);
 
-	if (success) res.send("logged in");
+	if (databaseUser) res.send("logged in");
 	else res.send("error");
 }

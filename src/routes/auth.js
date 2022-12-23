@@ -1,7 +1,6 @@
 import express from "express";
 import config from "../../config.js";
 import { Login } from "../utils/auth/auth.js";
-import { createToken } from "../utils/jwt.js";
 import render from "../utils/render.js";
 const router = express.Router();
 

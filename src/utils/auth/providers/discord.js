@@ -1,4 +1,5 @@
 import config from "../../../../config.js";
+import execute from "../../db.js";
 const discordConfig = config.auth.providers.discord;
 
 // Setup remote url
@@ -46,9 +47,30 @@ async function GetUserData(accessData) {
 
 export async function Authenticate(req, res) {
 	const accessData = await ExchangeCode(req.query.code);
-    console.log("🚀 ~ file: discord.js:49 ~ Authenticate ~ accessData", accessData)
-    const userData = await GetUserData(accessData);
-    console.log("🚀 ~ file: discord.js:51 ~ Authenticate ~ userData", userData)
+	if (!accessData) return false;
 
-	return true;
+	const userData = await GetUserData(accessData);
+	if (!userData) return false;
+
+	const user = (await execute(
+		`
+        SELECT u.*
+        FROM user u
+        INNER JOIN auth_discord a ON u.user_id = a.user_id
+        WHERE a.discord_id = ?;
+        `,
+		[userData.id]
+	))[0];
+	if (!user) return false;
+
+	await execute(
+		`
+        UPDATE auth_discord
+        SET access_token = ?, refresh_token = ?
+        WHERE discord_id = ?;
+        `,
+        [accessData.access_token, accessData.refresh_token, userData.id]
+    );
+
+	return user;
 }
