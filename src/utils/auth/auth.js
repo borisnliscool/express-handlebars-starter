@@ -4,13 +4,17 @@ import path from "path";
 import config, { __dirname } from "../../../config.js";
 
 const providers = {};
-fs.readdirSync(path.join(__dirname, "src/utils/auth/providers"))
-    .filter((f) => f.endsWith(".js"))
-    .forEach(async (file) => {
-        providers[file.replace(".js", "")] = await import(
-            "file://" + path.join(__dirname, "src/utils/auth/providers", file)
-        );
-    });
+export async function setupAuthentication () {
+    fs.readdirSync(path.join(__dirname, "src/utils/auth/providers"))
+        .filter((f) => f.endsWith(".js"))
+        .forEach(async (file) => {
+            providers[file.replace(".js", "")] = await import(
+                "file://" + path.join(__dirname, "src/utils/auth/providers", file)
+            );
+        });
+    
+    console.log("🔥 Setup authentication");
+};
 
 export default function Auth(req, res, next) {
 	const { access_data } = req.cookies;

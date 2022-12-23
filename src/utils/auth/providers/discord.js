@@ -14,6 +14,16 @@ discordConfig.remoteUrl = new URL(
 	`https://discord.com/api/oauth2/authorize?${searchParams}`
 );
 
+async function RefreshAllTokens() {
+	const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
+    const tokens = await execute("SELECT * FROM auth_discord WHERE expires <= ?", [ expires ]);
+    
+    console.log("🚀 ~ file: discord.js:21 ~ RefreshAllTokens ~ tokens", tokens);
+}
+
+RefreshAllTokens();
+setInterval(RefreshAllTokens, 15 * 60 * 1000);
+
 async function ExchangeCode(code) {
 	let params = new URLSearchParams();
 	params.append("client_id", discordConfig.clientId);
@@ -52,18 +62,20 @@ export async function Authenticate(req) {
 	const userData = await GetUserData(accessData);
 	if (!userData) return false;
 
-	const user = (await execute(
-		`
+	const user = (
+		await execute(
+			`
         SELECT u.*
         FROM user u
         INNER JOIN auth_discord a ON u.user_id = a.user_id
         WHERE a.discord_id = ?;
         `,
-		[userData.id]
-	))[0];
+			[userData.id]
+		)
+	)[0];
 	if (!user) return false;
 
-    const expiryDate = new Date(Date.now() + (accessData.expires_in * 1000));
+	const expiryDate = new Date(Date.now() + accessData.expires_in * 1000);
 
 	await execute(
 		`
@@ -71,8 +83,13 @@ export async function Authenticate(req) {
         SET access_token = ?, refresh_token = ?, expires = ?
         WHERE discord_id = ?;
         `,
-        [accessData.access_token, accessData.refresh_token, expiryDate.getTime(), userData.id]
-    );
+		[
+			accessData.access_token,
+			accessData.refresh_token,
+			expiryDate.getTime(),
+			userData.id,
+		]
+	);
 
 	return user;
 }

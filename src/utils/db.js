@@ -4,8 +4,7 @@ import fs from "fs";
 import path from "path";
 
 let connection;
-
-export function setup(config) {
+export function setupDatabase(config) {
     return new Promise((resolve, reject) => {
         connection = mysql2.createConnection(config);
         connection.connect((err, data) => {

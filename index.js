@@ -4,10 +4,11 @@ import path from "path";
 import fs from "fs";
 import config, { __dirname } from "./config.js";
 import cookieParser from "cookie-parser";
+import { setupDatabase } from "./src/utils/db.js";
+import { setupAuthentication } from "./src/utils/auth/auth.js";
 
-// Setup database
-import { setup } from "./src/utils/db.js";
-await setup(config.database);
+await setupDatabase(config.database);
+await setupAuthentication();
 
 const app = express();
 
