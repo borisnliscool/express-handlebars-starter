@@ -45,7 +45,7 @@ async function GetUserData(accessData) {
 	return response;
 }
 
-export async function Authenticate(req, res) {
+export async function Authenticate(req) {
 	const accessData = await ExchangeCode(req.query.code);
 	if (!accessData) return false;
 
@@ -63,13 +63,15 @@ export async function Authenticate(req, res) {
 	))[0];
 	if (!user) return false;
 
+    const expiryDate = new Date(Date.now() + (accessData.expires_in * 1000));
+
 	await execute(
 		`
         UPDATE auth_discord
-        SET access_token = ?, refresh_token = ?
+        SET access_token = ?, refresh_token = ?, expires = ?
         WHERE discord_id = ?;
         `,
-        [accessData.access_token, accessData.refresh_token, userData.id]
+        [accessData.access_token, accessData.refresh_token, expiryDate.getTime(), userData.id]
     );
 
 	return user;

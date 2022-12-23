@@ -1,10 +1,9 @@
-import { getTokenContents } from "../jwt.js";
+import { getTokenContents, createToken } from "../jwt.js";
 import fs from "fs";
 import path from "path";
-import { __dirname } from "../../../config.js";
+import config, { __dirname } from "../../../config.js";
 
 const providers = {};
-
 fs.readdirSync(path.join(__dirname, "src/utils/auth/providers"))
     .filter((f) => f.endsWith(".js"))
     .forEach(async (file) => {
@@ -29,9 +28,19 @@ export default function Auth(req, res, next) {
 }
 
 export async function Login(provider, req, res) {
-	const databaseUser = await providers[provider]?.Authenticate(req, res);
-	console.log("🚀 ~ file: auth.js:34 ~ Login ~ databaseUser", databaseUser);
+	const databaseUser = await providers[provider]?.Authenticate(req);
 
-	if (databaseUser) res.send("logged in");
-	else res.send("error");
+    if (!databaseUser) {
+        res.status(403).redirect(config.routes.login);
+        return;
+    }
+
+	res.cookie(
+		"access_data",
+		createToken({
+			uuid: databaseUser.uuid,
+			roles: databaseUser.roles.split(","),
+		})
+	);
+	res.status(200).redirect(config.routes.home);
 }

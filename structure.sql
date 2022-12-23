@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS auth_discord (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL,
 	discord_id BIGINT NOT NULL UNIQUE,
-	access_token VARCHAR(255) NOT NULL,
-	refresh_token VARCHAR(255) NOT NULL,
+	access_token VARCHAR(255),
+	refresh_token VARCHAR(255),
+	expires BIGINT,
 	FOREIGN KEY (user_id) REFERENCES user(user_id)
 );

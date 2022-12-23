@@ -18,13 +18,14 @@ export default {
         index: "/",
         home: "/home",
         login: "/login",
+        logout: "/logout",
     },
 
     database: {
         host: process.env.DB_HOST ?? "localhost",
         user: process.env.DB_USER ?? "root",
         password: process.env.DB_PASSWORD ?? "",
-        database: "example_database",
+        database: process.env.DB_DATABASE ?? "example_database",
     },
 
     auth: {

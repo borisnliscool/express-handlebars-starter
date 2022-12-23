@@ -3,8 +3,13 @@ import path from "path";
 import jwt from "jsonwebtoken";
 import { __dirname } from "../../config.js";
 
-const publicKey = fs.readFileSync(path.join(__dirname, "public.pem"), "utf8");
-const privateKey = fs.readFileSync(path.join(__dirname, "private.pem"), "utf8");
+let publicKey, privateKey;
+try {
+    publicKey = fs.readFileSync(path.join(__dirname, "public.pem"), "utf8");
+    privateKey = fs.readFileSync(path.join(__dirname, "private.pem"), "utf8");
+} catch (e) {
+    throw new Error("Could not read public or private key! You might need to generate a new pair. Please double check the readme file for setup information.");
+}
 
 export function getTokenContents(token) {
 	try {
