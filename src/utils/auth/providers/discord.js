@@ -1,5 +1,6 @@
 import config from "../../../../config.js";
 import execute from "../../db.js";
+import { CronJob } from "cron";
 const discordConfig = config.auth.providers.discord;
 
 // Setup remote url
@@ -16,13 +17,16 @@ discordConfig.remoteUrl = new URL(
 
 async function RefreshAllTokens() {
 	const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
-    const tokens = await execute("SELECT * FROM auth_discord WHERE expires <= ?", [ expires ]);
-    
-    console.log("🚀 ~ file: discord.js:21 ~ RefreshAllTokens ~ tokens", tokens);
+	const tokens = await execute(
+		"SELECT * FROM auth_discord WHERE expires <= ?",
+		[expires]
+	);
+
+	console.log("🚀 ~ file: discord.js:21 ~ RefreshAllTokens ~ tokens", tokens);
 }
 
-RefreshAllTokens();
-setInterval(RefreshAllTokens, 15 * 60 * 1000);
+const job = new CronJob("*/15 * * * *", RefreshAllTokens);
+job.start();
 
 async function ExchangeCode(code) {
 	let params = new URLSearchParams();
