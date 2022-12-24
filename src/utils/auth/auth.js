@@ -2,21 +2,22 @@ import { getTokenContents, createToken } from "../jwt.js";
 import fs from "fs";
 import path from "path";
 import config, { __dirname } from "../../../config.js";
+import execute from "../db.js";
 
 const providers = {};
-export async function setupAuthentication () {
-    fs.readdirSync(path.join(__dirname, "src/utils/auth/providers"))
-        .filter((f) => f.endsWith(".js"))
-        .forEach(async (file) => {
-            providers[file.replace(".js", "")] = await import(
-                "file://" + path.join(__dirname, "src/utils/auth/providers", file)
-            );
-        });
-    
-    console.log("🔥 Setup authentication");
-};
+export async function setupAuthentication() {
+	fs.readdirSync(path.join(__dirname, "src/utils/auth/providers"))
+		.filter((f) => f.endsWith(".js"))
+		.forEach(async (file) => {
+			providers[file.replace(".js", "")] = await import(
+				"file://" + path.join(__dirname, "src/utils/auth/providers", file)
+			);
+		});
 
-export default function Auth(req, res, next) {
+	console.log("🔥 Setup authentication");
+}
+
+export default async function Auth(req, res, next) {
 	const { access_data } = req.cookies;
 	if (!access_data) return res.status(403).redirect("/login");
 
@@ -26,7 +27,15 @@ export default function Auth(req, res, next) {
 		return res.status(403).redirect("/login");
 	}
 
-	req.user = contents;
+	const userData = (
+		await execute("SELECT * FROM user WHERE uuid = ?", [contents.uuid])
+	)[0];
+	if (!userData) {
+		res.clearCookie("access_data");
+		return res.status(403).redirect("/login");
+	}
+
+	req.user = userData;
 
 	next();
 }
@@ -34,16 +43,15 @@ export default function Auth(req, res, next) {
 export async function Login(provider, req, res) {
 	const databaseUser = await providers[provider]?.Authenticate(req);
 
-    if (!databaseUser) {
-        res.status(403).redirect(config.routes.login);
-        return;
-    }
+	if (!databaseUser) {
+		res.status(403).redirect(config.routes.login);
+		return;
+	}
 
 	res.cookie(
 		"access_data",
 		createToken({
 			uuid: databaseUser.uuid,
-			roles: databaseUser.roles.split(","),
 		})
 	);
 	res.status(200).redirect(config.routes.home);
