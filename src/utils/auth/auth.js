@@ -35,7 +35,12 @@ export default async function Auth(req, res, next) {
 		return res.status(403).redirect("/login");
 	}
 
-	req.user = userData;
+	req.user = {
+        id: userData.user_id,
+        uuid: userData.uuid,
+        roles: userData.roles.split(","),
+        created_at: userData.created_at
+    };
 
 	next();
 }
