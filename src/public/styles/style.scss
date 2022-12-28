@@ -92,6 +92,8 @@ body {
 
 	.banner {
 		@include center;
+        width: 95%;
+        max-width: 500px;
 		margin-bottom: 5em;
 
 		.rocket {
@@ -160,7 +162,22 @@ body {
 				border: 1px solid white;
 				border-radius: 5px;
 				background-color: rgba(255, 255, 255, 0.05);
+                text-decoration: none;
 			}
 		}
+
+        .login-button {
+            border: 1px solid gray;
+            padding: 0.5rem;
+            border-radius: 2.5px;
+    
+            color: black;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+    
+            &:hover {
+                
+            }
+        }
 	}
 }

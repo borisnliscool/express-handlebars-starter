@@ -1,0 +1,12 @@
+<div class="container">
+    <div class="banner">
+        <h1>Login</h1>
+        <div class="tutorial">
+            {{#each providers as |provider|}}
+            <a href="{{ provider }}" class="code-block">
+                {{ @key }}
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</div>

@@ -3,11 +3,18 @@ import { engine } from "express-handlebars";
 import path from "path";
 import fs from "fs";
 import config, { __dirname } from "./config.js";
+import cookieParser from "cookie-parser";
+import { setupDatabase } from "./src/utils/db.js";
+import { setupAuthentication } from "./src/utils/auth/auth.js";
+
+await setupDatabase(config.database);
+await setupAuthentication();
 
 const app = express();
 
 // Use json to be able to parse POST requests bodies
 app.use(express.json());
+app.use(cookieParser());
 
 // Handlebars configuration
 app.engine(
