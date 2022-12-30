@@ -6,6 +6,7 @@ import config, { __dirname } from "./config.js";
 import cookieParser from "cookie-parser";
 import { setupDatabase } from "./src/utils/db.js";
 import { setupAuthentication } from "./src/utils/auth/auth.js";
+import responseTime from "response-time";
 
 await setupDatabase(config.database);
 await setupAuthentication();
@@ -15,6 +16,7 @@ const app = express();
 // Use json to be able to parse POST requests bodies
 app.use(express.json());
 app.use(cookieParser());
+app.use(responseTime());
 
 // Handlebars configuration
 app.engine(
