@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import { setupDatabase } from "./src/utils/db.js";
 import { setupAuthentication } from "./src/utils/auth/auth.js";
 import responseTime from "response-time";
+import helmet from "helmet";
+import morgan from "morgan";
 
 await setupDatabase(config.database);
 await setupAuthentication();
@@ -17,6 +19,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(responseTime());
+app.use(helmet());
+app.use(morgan("dev"));
 
 // Handlebars configuration
 app.engine(
@@ -32,14 +36,17 @@ app.set("views", path.join(__dirname, "src/views"));
 app.use(express.static(path.join(__dirname, "dist")));
 
 // Use all routes in src/routes
-fs.readdirSync(path.join(__dirname, "src/routes"))
-	.filter((f) => f.endsWith(".js"))
-	.forEach(async (file) => {
-		const route = await import(
-			"file://" + path.join(__dirname, "src/routes", file)
-		);
-		app.use(route.default.router);
-	});
+const routeFiles = fs
+	.readdirSync(path.join(__dirname, "src/routes"))
+	.filter((f) => f.endsWith(".js"));
+
+routeFiles.forEach(async (file) => {
+	const routeModule = await import(
+		"file://" + path.join(__dirname, "src/routes", file)
+	);
+	const route = routeModule.default;
+	app.use(route.router);
+});
 
 app.listen(config.port, () => {
 	console.log(`🚀 Server running on http://localhost:${config.port}`);
